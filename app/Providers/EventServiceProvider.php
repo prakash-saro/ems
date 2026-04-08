@@ -2,6 +2,16 @@
 
 namespace App\Providers;
 
+use App\Events\AttendanceSaved;
+use App\Events\EmployeeSaved;
+use App\Events\LeaveSaved;
+use App\Events\TimesheetSaved;
+use App\Listeners\LogAttendanceAnalytics;
+use App\Listeners\LogEmployeeAnalytics;
+use App\Listeners\LogLeaveAnalytics;
+use App\Listeners\LogTimesheetAnalytics;
+use App\Models\Employee;
+use App\Observers\EmployeeObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +28,18 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        EmployeeSaved::class => [
+            LogEmployeeAnalytics::class,
+        ],
+        AttendanceSaved::class => [
+            LogAttendanceAnalytics::class,
+        ],
+        LeaveSaved::class => [
+            LogLeaveAnalytics::class,
+        ],
+        TimesheetSaved::class => [
+            LogTimesheetAnalytics::class,
+        ],
     ];
 
     /**
@@ -25,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Employee::observe(EmployeeObserver::class);
     }
 
     /**

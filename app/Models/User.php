@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'email_verified_at',
         'is_active'
     ];
 
@@ -42,7 +43,18 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_active' => 'boolean'
     ];
+
+    public function isVerified(): bool
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    public function isActive(): bool
+    {
+        return (bool) $this->is_active;
+    }
 
     public function roles()
     {
